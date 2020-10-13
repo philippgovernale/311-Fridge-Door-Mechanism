@@ -6,7 +6,12 @@
  */ 
 
 #include <avr/io.h>
-#include <stdio.h> // do we need this? I added it 
+#include <stdio.h> // do we need this? I added it. We need it if we want to print out anything
+
+enum current_dir = {OPENING, CLOSING};
+	
+#define TURN_ON(D) PORTB |= (1 << PB0); D==0 ? PORTB |= (1 << PB1) : PORTB &= ~(1 << PB1) 
+#define TURN_OFF PORTB &= ~(1 << PB0)
 
 int TouchSensor(void){
 	// Set up input pin
@@ -25,6 +30,31 @@ int TouchSensor(void){
 		return 0;
 	}
 			
+}
+
+void coil_PWM(uint8_t frequency, float duty_cycle, enum direction, uint8_t ncycles){
+	
+	//full cycle period in ms
+	uint8_t period_ms = 1000 / frequency;
+	
+	uint8_t on_time = (uint8_t) (duty_cycle * (float)period_ms);
+	uint8_t off_time = (uint8_t) ((1 - duty_cycle) * (float)period_ms);
+	
+	for(int i=0; i < ncycles, i++){
+		TURN_ON(direction);
+		timer_wait(on_time);
+		TURN_OFF;
+		timer_wait(off_time)
+	}
+
+}
+
+void setup_current_driver_pins(){
+	DDRB |= (1 << PB0); // Set PB0 as output enabling both drivers
+	DDRB |= (1 << PB1); // Set PB1 as output PWM (direction) pin for both drivers. high is opening, low is closing 
+	
+	/*How to drive this current driver still confuses me. I think, we will need 2 signals, one to disable all PWMs and the other to choose direction*/
+	
 }
 void PWMTimer(void){
 	
@@ -49,7 +79,7 @@ void PWMTimer(void){
 
 int main(void)
 {
-	
+	setup_current_driver_pins();
 	
 	
 	
