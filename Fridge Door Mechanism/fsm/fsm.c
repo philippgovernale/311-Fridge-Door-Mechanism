@@ -9,7 +9,7 @@ enum state = {
 void FSM_tick(){
   static enum state current_state = START;
 
-  static int calibrate = 1;
+  static uint8_t calibrated = 0;
 
   switch(current_state){
     case START:
@@ -34,13 +34,17 @@ void FSM_tick(){
       break;
 
     case OPEN:
-      start_open_door_timer(); /*function should enable timer that starts counting to 20 seconds or so (via ISR) and then set the state to door closing*/
+      sei();
+      set_door_unattended_interrupt(); /*function should enable timer that starts counting to 20 seconds or so (via ISR) and then set the state to door closing*/
       set_led(DOOR_OPEN);
+
+      uint8_t attempted_closing_door = 0;
 
       /*Poll the voltage across coil. If above certain threshold should switch state to door closing
         should also check door state*. Intermittently check the door state to make sure door is not closed/
         */
-      while(1){
+      while (1)
+      {
         if (coil_voltage > MOVING_DOOR_THRES){
           door_state = CLOSING;
           break;
@@ -48,20 +52,24 @@ void FSM_tick(){
 
         if (get_door_state() == DOOR_CLOSED){
           door_state = CLOSED;
+          door_unattended = 0;
           break;
         }
 
-        if (door_unattended){
+        if (door_unattended & !attempted_closing_door){
           closing_force();
+          clear_door_unattended_interrupt();
+          attempted_closing_door = 1;
         }
       }
 
+      cli();
       /*Polling voltage: if we shut off the top two transistors and turn on only one bottom transistor, then if voltage is across the coil it should flow through transistor*/
       break;
 
     case CLOSING:
       sei();
-      set_flashing_led();
+      set_flashing_led_interrupt();
 
       breaking_force();
       closing_force();
@@ -78,8 +86,9 @@ void FSM_tick(){
     case CLOSED:
       set_led(DOOR_CLOSED);
 
-      while(1){
-        if (get_door_state == DOOR_OPEN){
+      while (1)
+      {
+        if (get_door_state() == DOOR_OPEN){
           current_state = OPEN;
           break;
         }

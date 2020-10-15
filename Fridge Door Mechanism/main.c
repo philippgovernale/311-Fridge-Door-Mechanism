@@ -10,32 +10,11 @@
 
 enum door_status = {DOOR_OPEN, DOOR_CLOSED};
 
-#define TURN_ON(D) PORTB |= (1 << PB0); !D ? PORTB |= (1 << PB1) : PORTB &= ~(1 << PB1) // Change me
-#define TURN_OFF PORTB &= ~(1 << PB0)
 #define CURRENT_MEAS_DELAY_MS 4
 #define FREQ 20
 
 /*Threshold voltage for 4 ms voltage build up. This voltage is between expected current values for open/closed state*/
 #define OPEN_CLOSED_THRES 386 /*if count is above, then door is open, else closed*/
-
-
-void set_LED(enum state){
-	//** If the state variable is 1 that means door is open, turn on LED **//
-
-	if (state == 1){
-		// turn on the LEd
-		PORTB |= (1<<3); // set PB3 high
-	}
-	else{
-		PORTB &= ~(1<<3); // set PB3 low
-
-	}
-}
-
-void set_flashing_led(){
-	sei();
-
-}
 
 
 int is_touched(void){
@@ -54,26 +33,25 @@ void voltage_PWM(uint8_t frequency, float duty_cycle, enum door_status direction
 	uint8_t on_time = (uint8_t) (duty_cycle * (float)period_ms);
 	uint8_t off_time = (uint8_t) ((1 - duty_cycle) * (float)period_ms);
 
-	for(int i=0; i < ncycles, i++){
-		TURN_ON(direction);
+	for (uint8_t i=0; i < ncycles, i++){
+		switches(1, direction);
 		timer_wait(on_time);
-		TURN_OFF;
+		switches(0, direction);
 		timer_wait(off_time)
 	}
 
 }
 
-enum get_door_state(){
+enum door_status get_door_state(){
 	uint16_t ADC_count = get_ADC_count();
 
 	if (ADC_count > OPEN_CLOSED_THRES){
-		return OPEN;
+		return DOOR_OPEN;
 	}
 	else {
-		return CLOSED;
+		return DOOR_CLOSED;
 	}
 }
-
 
 void door_opening_sequence(){
 	voltage_PWM(FREQ, 0.1, OPEN, 1);
@@ -81,13 +59,11 @@ void door_opening_sequence(){
 	voltage_PWM(FREQ, 0.5, OPEN, 1);
 	voltage_PWM(FREQ, 0.7, OPEN, 1);
 	voltage_PWM(FREQ, 0.9, OPEN, 1);
-
 	/*
 	Opening sequence: 250 ms
     Could change this if it doesn't work, just a first guess
 	*/
 }
-
 
 int main(void)
 {
@@ -96,11 +72,11 @@ int main(void)
 	led_pins_initialise();
 	ADC_initialise();
 	timer_0_PWM_initialise();
-	timer_2_led_blink_initialise();
+	timer_2_initialise();
 
-
-    while (1)
-    {
+  while (1)
+  {
 			FSM_tick();
-    }
+  }
+	return 0;
 }

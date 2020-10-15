@@ -7,8 +7,10 @@
 #include "avr/io.h"
 
 #define BLINK_LIGHT_TIME 500
+#define DOOR_UNATTENDED_TIME 30000;
 /*counts number of ms. Put this in header with extern label*/
-volatile uint8_t timer_count;
+volatile uint8_t timer_count_led;
+volatile uint16_t timer_count_unattended;
 
 /* Initialises timer for use of PWM (1 ms timer)
 
@@ -22,10 +24,28 @@ void timer_0_PWM_initialise(){
 	OCR0A = 250;
 }
 
-void timer_2_led_blink_initialise(){
+void timer_2_initialise(){
 	TCCR2A = 0x02;
 	TCCR0B = 0x03;
 	OCR0A = 250;
+	OCR0B = 250;
+}
+
+void set_door_unattended_interrupt(){
+	TIMSK |= (1 << OCIE2B);
+	timer_count_unattended = 0;
+	TCNT2 = 0;
+}
+
+void set_flashing_led_interrupt(){
+	/*enable interupt vector */
+	TIMSK |= (1 << OCIE2A);
+	timer_count_led = 0;
+	TCNT2 = 0; //reset count
+}
+
+void clear_door_unattended_interrupt(){
+	TIMSK &= ~(1 << OCIE2B);
 }
 
 void timer_wait(uint32_t milliseconds){
@@ -46,10 +66,19 @@ void timer_wait(uint32_t milliseconds){
 	}
 }
 
+/*measure time door left open*/
+ISR(TIMER_2_COMPB_VECT){
+	timer_count_led++;
+
+	if (timer_count == DOOR_UNATTENDED_TIME){
+		door_unattended = 1;
+	}
+}
+
 
 /*flashing LED timer*/
 ISR(TIMER_2_COMPA_VECT){
-	timer_count++;
+	timer_count_unattended++;
 
 	if (timer_count == BLINK_LIGHT_TIME){
 		PORTB ^= (1 << PB4); /*toggle red led*/
