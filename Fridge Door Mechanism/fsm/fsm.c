@@ -76,7 +76,8 @@ void FSM_tick(){
 
       if (get_door_state() == DOOR_CLOSED){
         current_state = CLOSED;
-      }else{
+      }
+      else {
         current_state = OPEN;
       }
 
@@ -98,7 +99,6 @@ void FSM_tick(){
           current_state = OPENING;
           break;
         }
-
       }
       break;
 

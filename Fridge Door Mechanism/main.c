@@ -39,11 +39,14 @@ void voltage_PWM(uint8_t frequency, float duty_cycle, enum door_status direction
 		switches(0, direction);
 		timer_wait(off_time)
 	}
-
 }
 
-enum door_status get_door_state(){
+enum door_status get_door_state(enum door_status status){
+	switches(1, status);
+	timer_wait(CURRENT_MEAS_DELAY);
 	uint16_t ADC_count = get_ADC_count();
+
+	switches(0, status);
 
 	if (ADC_count > OPEN_CLOSED_THRES){
 		return DOOR_OPEN;

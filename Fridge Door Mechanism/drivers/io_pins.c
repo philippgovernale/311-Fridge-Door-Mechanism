@@ -28,13 +28,14 @@ void set_LEDs(enum door_status state){
 	}
 }
 
-void switches(uint8_t on,enum door_state direction){
+void switches(uint8_t on,enum door_state door_state){
   if (!on){
     PORTB &= ~(1 << PB1);
     PORTB &= ~(1 << PB0);
   }
   else {
-    if (direction == DOOR_OPEN){
+    /* if current state is door open, then apply opening current, as it will not change the state*/
+    if (door_state == DOOR_OPEN){
       PORTB |= (1 << PB0);
     }
     else {
