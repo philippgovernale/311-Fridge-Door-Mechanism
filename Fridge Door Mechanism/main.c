@@ -8,7 +8,7 @@
 #include <avr/io.h>
 #include <stdio.h> // do we need this? I added it. We need it if we want to print out anything
 
-enum current_dir = {OPEN, CLOSED};
+enum door_status = {DOOR_OPEN, DOOR_CLOSED};
 
 #define TURN_ON(D) PORTB |= (1 << PB0); !D ? PORTB |= (1 << PB1) : PORTB &= ~(1 << PB1) // Change me
 #define TURN_OFF PORTB &= ~(1 << PB0)
@@ -19,10 +19,8 @@ enum current_dir = {OPEN, CLOSED};
 #define OPEN_CLOSED_THRES 386 /*if count is above, then door is open, else closed*/
 
 
-void LED(enum state){
+void set_LED(enum state){
 	//** If the state variable is 1 that means door is open, turn on LED **//
-
-	DDRB |= (1<<3); // set as output
 
 	if (state == 1){
 		// turn on the LEd
@@ -34,22 +32,21 @@ void LED(enum state){
 	}
 }
 
-void setup_touch_sensor_pin(){
-	// Set up input pin
-	DDRB &= ~(1<<2) // Set pin 2 to be an input pin on B.
-	PORTB |= (1<<2) // Enable the pull-up Resistor for PB2
+void set_flashing_led(){
+	sei();
+
 }
+
 
 int is_touched(void){
 	//** HARDWARE MACROS** //
 	#define TOUCHED PINB & (1<<2) // will be 1 if pin is on
 
 	// ** The following code will return 1 if the sensor is being touched, and 0 if it is not **//
-
 	return TOUCHED ? 1 : 0
 }
 
-void voltage_PWM(uint8_t frequency, float duty_cycle, enum direction, uint8_t ncycles){
+void voltage_PWM(uint8_t frequency, float duty_cycle, enum door_status direction, uint8_t ncycles){
 
 	//full cycle period in ms
 	uint8_t period_ms = 1000 / frequency;
@@ -66,16 +63,8 @@ void voltage_PWM(uint8_t frequency, float duty_cycle, enum direction, uint8_t nc
 
 }
 
-void setup_current_driver_pins(){
-	DDRB |= (1 << 0); // Set PB0 as output enabling both drivers
-	DDRB |= (1 << 1); // Set PB1 as output PWM (direction) pin for both drivers. high is opening, low is closing
-
-	/*How to drive this current driver still confuses me. I think, we will need 2 signals, one to disable all PWMs and the other to choose direction*/
-
-}
-
 enum get_door_state(){
-	uint16_t ADC_count = measure_current();
+	uint16_t ADC_count = get_ADC_count();
 
 	if (ADC_count > OPEN_CLOSED_THRES){
 		return OPEN;
@@ -83,7 +72,7 @@ enum get_door_state(){
 	else {
 		return CLOSED;
 	}
-};
+}
 
 
 void door_opening_sequence(){
@@ -102,12 +91,16 @@ void door_opening_sequence(){
 
 int main(void)
 {
-	setup_current_driver_pins();
-
-
+	current_driver_pins_initialise();
+	sensor_pins_initialise();
+	led_pins_initialise();
+	ADC_initialise();
+	timer_0_PWM_initialise();
+	timer_2_led_blink_initialise();
 
 
     while (1)
     {
+			FSM_tick();
     }
 }
