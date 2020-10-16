@@ -13,6 +13,7 @@ enum door_status = {DOOR_OPEN, DOOR_CLOSED};
 #define CURRENT_MEAS_DELAY_MS 4
 #define FREQ 20
 
+/* OBSOLETE */
 /*Threshold voltage for 4 ms voltage build up. This voltage is between expected current values for open/closed state*/
 #define OPEN_CLOSED_THRES 386 /*if count is above, then door is open, else closed*/
 
@@ -41,6 +42,8 @@ void voltage_PWM(uint8_t frequency, float duty_cycle, enum door_status direction
 	}
 }
 
+/*
+Old state function
 enum door_status get_door_state(enum door_status status){
 	switches(1, status);
 	timer_wait(CURRENT_MEAS_DELAY);
@@ -55,8 +58,8 @@ enum door_status get_door_state(enum door_status status){
 		return DOOR_CLOSED;
 	}
 }
-
-void door_opening_sequence(){
+*/
+void opening_force(){
 	voltage_PWM(FREQ, 0.1, OPEN, 1);
 	voltage_PWM(FREQ, 0.3, OPEN, 1);
 	voltage_PWM(FREQ, 0.5, OPEN, 1);
@@ -65,6 +68,16 @@ void door_opening_sequence(){
 	/*
 	Opening sequence: 250 ms
     Could change this if it doesn't work, just a first guess
+	*/
+}
+
+/*higher power opening force, if first opening force does not close sufficiently*/
+void hp_opening_force(){
+	voltage_PWM(FREQ, 0.5, OPEN, 2);
+	voltage_PWM(FREQ, 0.7, OPEN, 2);
+	voltage_PWM(FREQ, 0.9, OPEN, 2);
+	/*
+	sequence: 300 ms
 	*/
 }
 
@@ -79,7 +92,7 @@ int main(void)
 
   while (1)
   {
-			FSM_tick();
+		FSM_tick();
   }
 	return 0;
 }

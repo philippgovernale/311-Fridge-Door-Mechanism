@@ -3,7 +3,6 @@ enum state = {
   START,
   OPENING,
   OPEN,
-  CLOSING,
   CLOSED,
 }
 void FSM_tick(){
@@ -29,6 +28,7 @@ void FSM_tick(){
       }
       else {
         ; /*do alternative attempt to open door*/
+		hp_opening_force();
       }
 
       break;
@@ -39,22 +39,20 @@ void FSM_tick(){
       set_led(DOOR_OPEN);
 
       uint8_t attempted_closing_door = 0;
+	  
+	  uint16_t tc = measure_time_constant();
 
-      /*Poll the voltage across coil. If above certain threshold should switch state to door closing
-        should also check door state*. Intermittently check the door state to make sure door is not closed/
-        */
       while (1)
       {
-        if (coil_voltage > MOVING_DOOR_THRES){
-          door_state = CLOSING;
-          break;
-        }
-
         if (get_door_state() == DOOR_CLOSED){
           door_state = CLOSED;
           door_unattended = 0;
           break;
         }
+		
+		if (tc_incr_closing()){
+			closing_force();
+		}
 
         if (door_unattended & !attempted_closing_door){
           closing_force();
@@ -64,7 +62,6 @@ void FSM_tick(){
       }
 
       cli();
-      /*Polling voltage: if we shut off the top two transistors and turn on only one bottom transistor, then if voltage is across the coil it should flow through transistor*/
       break;
 
     case CLOSING:

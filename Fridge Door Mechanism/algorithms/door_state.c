@@ -92,3 +92,14 @@ enum door_state get_door_state(enum door_state state, enum door_state intended_s
     get_door_state_uncalib(state, intended_state);
   }
 }
+
+uint8_t tc_incr_closing(uint16_t tc){
+	uint16_t tc_comp = measure_time_constant();
+	
+	if (tc > tc_comp && (abs(tc - tc_comp)/tc) > 0.1){
+		return 1; /*door is likely to be more closed*/
+	}
+	else {
+		return 0; 
+	}
+}
