@@ -35,10 +35,12 @@ void FSM_tick(){
 
     case OPEN:
       sei();
+	  set_door_open_interrupt();
       set_door_unattended_interrupt(); /*function should enable timer that starts counting to 20 seconds or so (via ISR) and then set the state to door closing*/
       set_led(DOOR_OPEN);
 
       uint8_t attempted_closing_door = 0;
+	  door_unattended = 0; /*reset flag in case still high*/
 	  
 	  uint16_t tc = measure_time_constant();
 
@@ -50,39 +52,34 @@ void FSM_tick(){
           break;
         }
 		
-		if (tc_incr_closing()){
+		/* door is still closer to being closed but not quite closed so we apply a higher closing force*/
+		else if (tc_incr_closing(tc) && attempted_closing_door){
+			hp_closing_force();
+			tc = measure_time_constant();
+		}
+		
+		else if (tc_incr_closing(tc)){
 			closing_force();
+			tc = measure_time_constant();
+			attempted_closing_door = 1;
 		}
 
-        if (door_unattended & !attempted_closing_door){
+        else if (door_unattended & !attempted_closing_door){
           closing_force();
           clear_door_unattended_interrupt();
           attempted_closing_door = 1;
         }
-      }
-
-      cli();
-      break;
-
-    case CLOSING:
-      sei();
-      set_flashing_led_interrupt();
-
-      breaking_force();
-      closing_force();
-
-      if (get_door_state() == DOOR_CLOSED){
-        current_state = CLOSED;
-      }
-      else {
-        current_state = OPEN;
-      }
-
-      cli();
-      break;
+     }
+	 clear_door_unattended_interrupt();
+	 clear_door_open_interrupt(); 
+     cli();
+     break;
 
     case CLOSED:
       set_led(DOOR_CLOSED);
+	  set_touch_interrupt();
+	  setup_WDT(); /*I think this can go in the main*/
+	  
 
       while (1)
       {
@@ -90,13 +87,19 @@ void FSM_tick(){
           current_state = OPEN;
           break;
         }
+		
+		/*sleep for 1s by going to power down mode*/
+		enable_WDT_interrupt();
+		SMCR |= (1 << SM1);//power down sleep mode
+		sleep_enable();
+		sei();
+		sleep_cpu();
+		sleep_disable();
+		cli();
+		
 
-        /*for now any touch will activate opening, actually checking that it is touched for a period of time might prove more challenging than anticipated*/
-        if (TOUCHED){
-          current_state = OPENING;
-          break;
-        }
       }
+	  clear_touch_interrupt();
       break;
 
     default:
