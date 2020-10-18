@@ -12,7 +12,7 @@ void FSM_tick(){
 
   switch(current_state){
     case START:
-      if (get_door_state() == DOOR_OPEN){
+      if (get_door_state(UNKNOWN, UNKNOWN) == DOOR_OPEN){
         current_state = OPEN;
       }
       else {

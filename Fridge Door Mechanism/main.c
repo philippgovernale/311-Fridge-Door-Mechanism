@@ -8,7 +8,7 @@
 #include <avr/io.h>
 #include <stdio.h> // do we need this? I added it. We need it if we want to print out anything
 
-enum door_status = {DOOR_OPEN, DOOR_CLOSED};
+enum door_status = {DOOR_OPEN, DOOR_CLOSED, UNKNOWN};
 
 #define CURRENT_MEAS_DELAY_MS 4
 #define FREQ 20

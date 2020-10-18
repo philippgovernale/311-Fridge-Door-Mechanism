@@ -1,105 +1,107 @@
 #include <math.h>
 
-#define MIN_CLOSED_DOOR_TC 0.00417
-#define MAX_OPEN_DOOR_TC 0.00212
+/*!!! are these for closing or opening forces? These are wrong. We need:
+ - min opening force 10% duty cycle closed door tc
+ - max opening force 10% duty cycle open door tc
+ - min closing force 10% duty cycle closed door tc
+ - max closing force 10% duty cycle open door tc*/
 
-float door_closed_tc = 0;
-float door_open_tc = 0;
+#define MIN_OPENING_F_10_DC_CLOSED_TC
+#define MAX_OPENING_F_10_DC_OPEN_TC
+#define MIN_CLOSING_F_10_DC_CLOSED_TC
+#define MAX_CLOSING_F_10_DC_OPEN_TC
+
+float closing_f_door_closed_tc = 0;
+float closing_f_door_open_tc = 0;
+
+float opening_f_door_closed_tc = 0;
+float opening_f_door_open_tc = 0;
 
 enum door_state get_door_state_uncalib(enum door_state state, enum door_state intended_state){
-  float tc = measure_time_constant(state);
-
-  if (tm > MIN_CLOSED_DOOR){
-    door_closed_tc = tc;
-    return CLOSED_DOOR;
-  }
-  else if (tm < MAX_OPEN_DOOR){
-    door_open_tc = tc;
-    return OPEN_DOOR;
-  }
-  else {
-    /* if the time constant is not in between these two previosuly measured values, then we first see which state is closest*/
-
-    if (tc > MAX_OPEN_DOOR_TC + (MIN_CLOSED_DOOR_TC - MAX_OPEN_DOOR_TC)){
-      /*Most likely to be a closed door state as the time constant is closer to that value*/
-      /*Apply a very short pulse to see if the time constant changes. If it does, it suggest the door may have been nearly closed*/
-
-      if (intended_state == DOOR_OPEN){
-        return DOOR_CLOSED;
-      }
-
-      switch(1, DOOR_CLOSED);
-      timer_wait(40);
-      switch(0, DOOR_CLOSED);
-      float tc_comp = measure_time_constant(state);
-
-      /* if the change in measurement is less than 2%, then assume the door has been closed all the time*/
-      if (abs(tc_comp - tc)/tc < 0.02){
-        door_closed_tc = tc;
-        return DOOR_CLOSED;
-      }
-
-      /*Otherwise assume that the force changed the door position, which means the door may still be open*/
-      return get_door_state(DOOR_OPEN, DOOR_CLOSED);
-
-    }
-    else {
-      /*Most likely to be an open door state, as the time constant is closer to that value*/
-
-      /* don't try to apply a closing force as we want to have the door open*/
-      if (intended_state == DOOR_CLOSED){
-        return DOOR_OPEN;
-      }
-
-      switch(1, DOOR_OPEN);
-      timer_wait(40);
-      switch(0, DOOR_OPEN);
-      float tc_comp = measure_time_constant(enum door_state state);
-
-      if (abs(tc_comp - tc)/tc < 0.02){
-        door_open_tc = tc;
-        return DOOR_OPEN;
-      }
-
-      /*Assume the force changed the position which means the door may still be somewhat closed*/
-      return get_door_state(DOOR_OPEN, DOOR_CLOSED);
-    }
-  }
-
-  }
-}
-
-enum door_state get_door_state(enum door_state state, enum door_state intended_state){
-  /*if*/
-  if (!door_closed_tc || !door_open_tc){
-    get_door_state_uncalib(state, intended_state);
-  }
-
-  float tc = measure_time_constant();
-
-  float door_open = abs(tc-door_open_tc)/tc;
-  float door_closed = abs(tc-door_closed_tc)/tc;
-
-
-  /*door closed should always be at least 40% higher than door open. Maximum divergences in door door closed are ~31%*/
-  if (door_closed < 0.31 && door_open > 0.40){
-    return DOOR_CLOSED;
-  }
-  else if (door_open < 0.15 & door_closed > 0.40){
-    return DOOR_OPEN;
-  }
-  else{
-    get_door_state_uncalib(state, intended_state);
-  }
-}
-
-uint8_t tc_incr_closing(uint16_t tc){
-	uint16_t tc_comp = measure_time_constant();
+	/*Always measure with door closed when calibrating as when the fridge is first started, this may be safely assumed*/
+	float tc;
+	if (state == UNKNOWN){
+		tc = measure_time_constant(DOOR_CLOSED, DOOR_CLOSED);
+	}
 	
-	if (tc > tc_comp && (abs(tc - tc_comp)/tc) > 0.1){
-		return 1; /*door is likely to be more closed*/
-	}
 	else {
-		return 0; 
+		tc = measure_time_constant(state , intended_state);
 	}
+	
+
+	if (intended_state == DOOR_CLOSED && tc > MIN_CLOSING_F_10_DC_CLOSED_TC){
+		closing_f_door_closed_tc = tc;
+		return DOOR_CLOSED;
+	}
+	else if (intended_state == DOOR_CLOSED && tc < MAX_CLOSING_F_10_DC_OPEN_TC){
+		closing_f_door_open_tc = tc;
+		return DOOR_OPEN;
+	}
+	else if (intended_state == DOOR_OPEN && tc > MIN_OPENING_F_10_DC_CLOSED_TC){
+		opening_f_door_closed_tc = tc;
+		return DOOR_CLOSED
+	}
+	else if (intended_state == DOOR_OPEN && tc < MAX_CLOSING_F_10_DC_OPEN_TC){
+		opening_f_door_open_tc = tc;
+		return DOOR_OPEN;
+	}
+	
+	/* Potentially readd here code handling tc outside of calculated time constants*/
 }
+
+	  /*door closed should always be at least 40% higher than door open. Maximum divergences in door door closed are ~31%
+	  !!!! These numbers, I believe are not for 10% */
+  enum door_state get_door_state(enum door_state state, enum door_state intended_state){
+	  /*if*/
+	  if (!closing_f_door_closed_tc || closing_f_door_open_tc || opening_f_door_closed_tc || opening_f_door_open_tc){
+		  get_door_state_uncalib(state, intended_state);
+	  }
+
+	  float tc = measure_time_constant(state);
+
+	  float door_open, door_closed;
+	  
+	  if (intended_state == DOOR_CLOSED){
+		  door_open = abs(tc-closing_f_door_open_tc)/tc;
+		  door_closed = abs(tc-closing_f_door_closed_tc)/tc;
+		  
+		  if (door_closed < 0.31 && door_open > 0.40){
+			  closing_f_door_closed_tc = tc;
+			  return DOOR_CLOSED;
+		  }
+		  else if (door_open < 0.15 & door_closed > 0.40){
+			  closing_f_door_open_tc = tc;
+			  return DOOR_OPEN;
+		  }
+		  else{
+			  get_door_state_uncalib(state, intended_state);
+		  }	  
+	  }
+	  else if (intended_state == DOOR_OPEN){
+		  door_open = abs(tc-opening_f_door_open_tc)/tc;
+		  door_closed = abs(tc-closing_f_door_closed_tc)/tc;
+		  
+		  if (door_closed < 0.31 && door_open > 0.40){
+			  opening_f_door_closed_tc = tc;
+			  return DOOR_CLOSED;
+		  }
+		  else if (door_open < 0.15 & door_closed > 0.40){
+			  opening_f_door_open_tc = tc;
+			  return DOOR_OPEN;
+		  }
+		  else{
+			  get_door_state_uncalib(state, intended_state);
+		  }	  
+	  }
+  }
+
+  uint8_t tc_incr_closing(uint16_t tc){
+	  uint16_t tc_comp = measure_time_constant();
+	  
+	  if (tc > tc_comp && (abs(tc - tc_comp)/tc) > 0.1){
+		  return 1; /*door is likely to be more closed*/
+	  }
+	  else {
+		  return 0;
+	  }
+  }
