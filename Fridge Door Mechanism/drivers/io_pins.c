@@ -1,3 +1,6 @@
+
+volatile uint8_t touched = 0;
+
 void current_driver_pins_initialise(){
 	DDRB |= (1 << 0); /*Output pins for current driver. PB0 is opening direction*/
 	DDRB |= (1 << 1);
@@ -57,5 +60,5 @@ void switches(uint8_t on,enum door_state door_state){
 }
 
 ISR(INT0_vect){
-	
+	touched = 1;
 }

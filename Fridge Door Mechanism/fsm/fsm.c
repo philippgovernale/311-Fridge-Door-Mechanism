@@ -88,6 +88,12 @@ void FSM_tick(){
           break;
         }
 		
+		if (touched){
+			touched = 0;
+			current_state = OPENING;
+			break;
+		}
+		
 		/*sleep for 1s by going to power down mode*/
 		enable_WDT_interrupt();
 		SMCR |= (1 << SM1);//power down sleep mode
@@ -99,6 +105,7 @@ void FSM_tick(){
 		
 
       }
+	  disable_WDT_interrupt();
 	  clear_touch_interrupt();
       break;
 
