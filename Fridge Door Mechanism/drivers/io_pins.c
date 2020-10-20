@@ -1,3 +1,5 @@
+#include <avr/interrupt.h>
+#include "io_pins.h"
 
 volatile uint8_t touched = 0;
 
@@ -8,8 +10,8 @@ void current_driver_pins_init(){
 
 void sensor_pins_init(){
 	// Set up input pin
-	DDRD &= ~(1<<2) // Set pin 2 to be an input pin on D.
-	PORTD |= (1<<2) // Enable the pull-up Resistor for PD2
+	DDRD &= ~(1<<2); // Set pin 2 to be an input pin on D.
+	PORTD |= (1<<2); // Enable the pull-up Resistor for PD2
 }
 
 void led_pins_init(){
@@ -28,7 +30,7 @@ void clear_touch_interrupt(){
 	EIMSK &= (1 << INT0);
 }
 
-void set_LEDs(uint8_t state){
+void set_LED(uint8_t state){
 	//** If the state variable is 1 that means door is open, turn on LED **//
 
 	if (state){
@@ -36,18 +38,18 @@ void set_LEDs(uint8_t state){
 		PORTB |= (1<<PB3); // set led
 	}
 	else{
-		PORTB &= ~(1 << PB3); //clear clear
+		PORTB &= ~(1 << PB3); //clear
 	}
 }
 
-void switches(uint8_t on,enum door_state door_state){
+void switches(uint8_t on,enum door_state state){
   if (!on){
     PORTB &= ~(1 << PB1);
     PORTB &= ~(1 << PB0);
   }
   else {
     /* if current state is door open, then apply opening current, as it will not change the state*/
-    if (door_state == DOOR_OPEN){
+    if (state == DOOR_OPEN){
       PORTB |= (1 << PB0);
     }
     else {

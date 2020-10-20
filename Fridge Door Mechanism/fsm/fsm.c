@@ -1,14 +1,21 @@
+#include <avr/interrupt.h>
+#include <avr/sleep.h>
+#include <stdint.h>
 
-enum state = {
+#include "../drivers/timer.h"
+#include "../drivers/io_pins.h"
+#include "../algorithms/pwm.h"
+#include "../algorithms/door_state.h"
+#include "../algorithms/current_measure.h"
+
+enum state {
   START,
   OPENING,
   OPEN,
-  CLOSED,
-}
+  CLOSED
+};
 void FSM_tick(){
   static enum state current_state = START;
-
-  static uint8_t calibrated = 0;
 
   switch(current_state){
     case START:
@@ -23,7 +30,7 @@ void FSM_tick(){
     case OPENING:
       opening_force();
 
-      if (get_door_state() == DOOR_OPEN){
+      if (get_door_state(DOOR_OPEN, DOOR_OPEN) == DOOR_OPEN){
         current_state = OPEN;
       }
       else {
@@ -39,14 +46,14 @@ void FSM_tick(){
 
 
       uint8_t attempted_closing_door = 0;
-	  door_unattended = 0; /*reset flag in case still high*/
+	  door_unattended = 0; /*reset flag*/
 	  
-	  uint16_t i_value = measure_current_rise();
+	  uint16_t i_value = measure_current_rise(DOOR_OPEN, DOOR_OPEN);
 
       while (1)
       {
-        if (get_door_state() == DOOR_CLOSED){
-          door_state = CLOSED;
+        if (get_door_state(DOOR_OPEN, DOOR_OPEN) == DOOR_CLOSED){
+          current_state = CLOSED;
           door_unattended = 0;
           break;
         }
@@ -54,7 +61,7 @@ void FSM_tick(){
 		if (door_closing(i_value)){
 			 //breaking force
 			switch(1, DOOR_OPEN);
-			timer_wait(5) //10%
+			timer_wait(5); //10%
 			switch(0, DOOR_OPEN);
 			closing_force(); //then finish closing the door
 		}
@@ -64,7 +71,7 @@ void FSM_tick(){
 			clear_door_unattended_interrupt();
 			attempted_closing_door = 1;
 			
-			if (get_door_state() == DOOR_OPEN){
+			if (get_door_state(DOOR_OPEN, DOOR_CLOSED) == DOOR_OPEN){
 				hp_closing_force();
 			}
         }
@@ -80,14 +87,12 @@ void FSM_tick(){
      break;
 
     case CLOSED:
-      set_led(DOOR_CLOSED);
-	  set_touch_interrupt();
-	  setup_WDT(); /*I think this can go in the main*/
-	  
+      set_LED(DOOR_CLOSED);
+	  set_touch_interrupt();	  
 
       while (1)
       {
-        if (get_door_state() == DOOR_OPEN){
+        if (get_door_state(DOOR_CLOSED, DOOR_CLOSED) == DOOR_OPEN){
           current_state = OPEN;
           break;
         }

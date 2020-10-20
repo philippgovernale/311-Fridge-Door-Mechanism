@@ -41,7 +41,8 @@ SUBDIRS :=  \
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../algorithms/door_state.c \
-../algorithms/time_constant.c \
+../algorithms/current_measure.c \
+../algorithms/pwm.c \
 ../drivers/adc.c \
 ../drivers/io_pins.c \
 ../drivers/timer.c \
@@ -57,7 +58,8 @@ ASM_SRCS +=
 
 OBJS +=  \
 algorithms/door_state.o \
-algorithms/time_constant.o \
+algorithms/current_measure.o \
+algorithms/pwm.o \
 drivers/adc.o \
 drivers/io_pins.o \
 drivers/timer.o \
@@ -66,7 +68,8 @@ main.o
 
 OBJS_AS_ARGS +=  \
 algorithms/door_state.o \
-algorithms/time_constant.o \
+algorithms/current_measure.o \
+algorithms/pwm.o \
 drivers/adc.o \
 drivers/io_pins.o \
 drivers/timer.o \
@@ -75,7 +78,8 @@ main.o
 
 C_DEPS +=  \
 algorithms/door_state.d \
-algorithms/time_constant.d \
+algorithms/current_measure.d \
+algorithms/pwm.d \
 drivers/adc.d \
 drivers/io_pins.d \
 drivers/timer.d \
@@ -84,7 +88,8 @@ main.d
 
 C_DEPS_AS_ARGS +=  \
 algorithms/door_state.d \
-algorithms/time_constant.d \
+algorithms/current_measure.d \
+algorithms/pwm.d \
 drivers/adc.d \
 drivers/io_pins.d \
 drivers/timer.d \
@@ -112,7 +117,14 @@ algorithms/door_state.o: ../algorithms/door_state.c
 	@echo Finished building: $<
 	
 
-algorithms/time_constant.o: ../algorithms/time_constant.c
+algorithms/current_measure.o: ../algorithms/current_measure.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)D:\Apps\New folder\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\Apps\New folder\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "D:\Apps\New folder\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+algorithms/pwm.o: ../algorithms/pwm.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)D:\Apps\New folder\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\Apps\New folder\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "D:\Apps\New folder\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

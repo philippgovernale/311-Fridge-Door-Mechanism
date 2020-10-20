@@ -1,11 +1,13 @@
+#include <avr/io.h>
+#include <stdint.h>
 
-
+#include "adc.h"
 
 void ADC_init(){
 
 	/* Use Pin C0 as ADC input*/
-	DDRC &= ~(1<<0) // Set PC0 to be an input pin
-	PORTC |= (1<<0) // Enable the pull-up Resistor for PC0
+	DDRC &= ~(1<<0); // Set PC0 to be an input pin
+	PORTC |= (1<<0); // Enable the pull-up Resistor for PC0
 
 	/*Ensure lower 4 bits are disabled to select ADC0 pin*/
 	ADMUX &= 0xF0;
@@ -16,7 +18,7 @@ uint16_t get_ADC_count (){
 
 	ADCSRA |= (1 << ADEN); /*enables ADC*/
 
-	ADCSRA |= (1 << ADSC) /* start conversion*/
+	ADCSRA |= (1 << ADSC); /* start conversion*/
 
 	while(ADCSRA & (1 << ADIF) ==0){;}; /*wait for the ADC to convert value*/
 

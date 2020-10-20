@@ -114,19 +114,40 @@
     <Compile Include="algorithms\current_measure.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="algorithms\door_state.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="algorithms\current_measure.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="algorithms\pwm.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="algorithms\pwm.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\adc.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\adc.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\io_pins.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\io_pins.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\timer.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\timer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="fsm\fsm.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="fsm\fsm.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">

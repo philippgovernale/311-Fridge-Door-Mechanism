@@ -1,14 +1,17 @@
-#include <math.h>
+#include <stdlib.h>
 
+#include "door_state.h"
+#include "current_measure.h"
+#include "../drivers/timer.h"
 
 /* these are ADC counts*/
 /* closing current minimum value (closed): 1.174 A
    closing current maximum value (open): 2.14 A
 */
-#define MIN_OPENING_50_DC_4_MS
-#define MAX_OPENING_50_DC_4_MS
-#define MIN_CLOSING_50_DC_4_MS
-#define MAX_CLOSING_50_DC_4_MS
+#define MIN_OPENING_50_DC_4_MS 500
+#define MAX_OPENING_50_DC_4_MS 500
+#define MIN_CLOSING_50_DC_4_MS 500
+#define MAX_CLOSING_50_DC_4_MS 500
 
 #define AVERAGE_CLOSING_50_DC_4_MS (MAX_CLOSING_50_DC_4_MS - MIN_CLOSING_50_DC_4_MS)/2 + MIN_CLOSING_50_DC_4_MS
 #define AVERAGE_OPENING_50_DC_4_MS (MAX_OPENING_50_DC_4_MS - MIN_OPENING_50_DC_4_MS)/2 + MIN_OPENING_50_DC_4_MS
@@ -36,7 +39,7 @@ enum door_state get_door_state_uncalib(enum door_state state, enum door_state in
 		/*15% variation allowed*/
 		if (((abs(ADC_count_4_ms - MIN_CLOSING_50_DC_4_MS)*100) / ADC_count_4_ms) < 15){
 			closing_door_closed_current = ADC_count_4_ms;
-			return DOOR_CLOSED:
+			return DOOR_CLOSED;
 		}
 		
 		/*if less than minimum, definitely open*/
@@ -137,6 +140,8 @@ enum door_state get_door_state_uncalib(enum door_state state, enum door_state in
 			}			
 		}
 	}
+	/*In case nothing matches (very unlikely) assume state has not changed*/
+	return state;
 }
 
 	  /*door closed should always be at least 40% higher than door open. Maximum divergences in door door closed are ~31%
@@ -168,7 +173,7 @@ enum door_state get_door_state_uncalib(enum door_state state, enum door_state in
 		  }	  
 	  }
 	  else if (intended_state == DOOR_OPEN){
-		  door_open = abs(i_ADC-opening_door_open_tc)*100 / i_ADC;
+		  door_open = abs(i_ADC-opening_door_open_current)*100 / i_ADC;
 		  door_closed = abs(i_ADC-opening_door_closed_current)*100 / i_ADC;
 		  
 		  if (door_closed < 31 && door_open > 0.40){
@@ -183,10 +188,12 @@ enum door_state get_door_state_uncalib(enum door_state state, enum door_state in
 			  get_door_state_uncalib(state, intended_state);
 		  }	  
 	  }
+	  
+	  return state;
   }
 
   uint8_t door_closing(uint16_t i_ADC_v){
-	  uint16_t i_ADC_comp = measure_current_rise();
+	  uint16_t i_ADC_comp = measure_current_rise(DOOR_OPEN, DOOR_OPEN);
 	  
 	  /*if the decrease in current is by more than 5%, then door is likely to be closing*/
 	  if (i_ADC_comp < i_ADC_v && (abs(i_ADC_comp - i_ADC_v)*100/i_ADC_comp) > 5){

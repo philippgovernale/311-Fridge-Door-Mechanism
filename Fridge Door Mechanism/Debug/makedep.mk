@@ -4,7 +4,9 @@
 
 algorithms\door_state.c
 
-algorithms\time_constant.c
+algorithms\current_measure.c
+
+algorithms\pwm.c
 
 drivers\adc.c
 
