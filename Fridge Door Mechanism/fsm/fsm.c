@@ -41,50 +41,45 @@ void FSM_tick(){
       break;
 
     case OPEN:
-      sei();
-      set_door_unattended_and_led_interrupt(); /*function should enable timer that starts counting to 30s (via ISR) and then set the state to door closing*/
+		sei();
+		set_door_unattended_and_led_interrupt(); /*function should enable timer that starts counting to 30s (via ISR) and then set the state to door closing*/
 
-
-      uint8_t attempted_closing_door = 0;
-	  door_unattended = 0; /*reset flag*/
+		door_unattended = 0; /*reset flag*/
 	  
-	  uint16_t i_value = measure_current_rise(DOOR_OPEN, DOOR_OPEN);
+		uint16_t i_value = measure_current_rise(DOOR_OPEN, DOOR_OPEN);
 
-      while (1)
-      {
-        if (get_door_state(DOOR_OPEN, DOOR_OPEN) == DOOR_CLOSED){
-          current_state = CLOSED;
-          door_unattended = 0;
-          break;
-        }
-		
-		if (door_closing(i_value)){
-			 //breaking force
-			switch(1, DOOR_OPEN);
-			timer_wait(5); //10%
-			switch(0, DOOR_OPEN);
-			closing_force(); //then finish closing the door
-		}
-		
-        else if (door_unattended & !attempted_closing_door){
-			closing_force();
-			clear_door_unattended_interrupt();
-			attempted_closing_door = 1;
-			
-			if (get_door_state(DOOR_OPEN, DOOR_CLOSED) == DOOR_OPEN){
-				hp_closing_force();
+		while (1)
+		{
+			if (get_door_state(DOOR_OPEN, DOOR_OPEN) == DOOR_CLOSED){
+			current_state = CLOSED;
+			door_unattended = 0;
+			break;
 			}
-        }
+		
+			if (door_closing(i_value)){
+			 //breaking force
+				switch(1, DOOR_OPEN);
+				timer_wait(5); //10%
+				switch(0, DOOR_OPEN);
+				closing_force(); //then finish closing the door
+			}
+		
+			else if (door_unattended ){
+				closing_force();
+				clear_door_unattended_interrupt();
+			
+			/*if the door is still closed at this point then don't try to close it anymore as its probably too far away*/
+			}
 		
 		/*Perform 1 10% cycle, to break door if necessary*/
-		set_door_open_interrupt();
-		timer_wait(50);
-		clear_door_open_interrupt();
+			set_door_open_interrupt();
+			timer_wait(50);
+			clear_door_open_interrupt();
 		
-     }
-	 clear_door_open_interrupt(); 
-     cli();
-     break;
+		}
+		clear_door_open_interrupt(); 
+		cli();
+		break;
 
     case CLOSED:
       set_LED(DOOR_CLOSED);
