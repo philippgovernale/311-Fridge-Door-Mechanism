@@ -27,7 +27,7 @@ void FSM_tick(){
         current_state = OPEN;
       }
       else {
-        ; /*do alternative attempt to open door*/
+        /*do alternative attempt to open door*/
 		hp_opening_force();
       }
 
@@ -35,14 +35,13 @@ void FSM_tick(){
 
     case OPEN:
       sei();
-	  set_door_open_interrupt();
-      set_door_unattended_interrupt(); /*function should enable timer that starts counting to 20 seconds or so (via ISR) and then set the state to door closing*/
-      set_led(DOOR_OPEN);
+      set_door_unattended_and_led_interrupt(); /*function should enable timer that starts counting to 30s (via ISR) and then set the state to door closing*/
+
 
       uint8_t attempted_closing_door = 0;
 	  door_unattended = 0; /*reset flag in case still high*/
 	  
-	  uint16_t tc = measure_time_constant();
+	  uint16_t i_value = measure_current_rise();
 
       while (1)
       {
@@ -52,25 +51,30 @@ void FSM_tick(){
           break;
         }
 		
-		/* door is still closer to being closed but not quite closed so we apply a higher closing force*/
-		else if (tc_incr_closing(tc) && attempted_closing_door){
-			hp_closing_force();
-			tc = measure_time_constant();
+		if (door_closing(i_value)){
+			 //breaking force
+			switch(1, DOOR_OPEN);
+			timer_wait(5) //10%
+			switch(0, DOOR_OPEN);
+			closing_force(); //then finish closing the door
 		}
 		
-		else if (tc_incr_closing(tc)){
-			closing_force();
-			tc = measure_time_constant();
-			attempted_closing_door = 1;
-		}
-
         else if (door_unattended & !attempted_closing_door){
-          closing_force();
-          clear_door_unattended_interrupt();
-          attempted_closing_door = 1;
+			closing_force();
+			clear_door_unattended_interrupt();
+			attempted_closing_door = 1;
+			
+			if (get_door_state() == DOOR_OPEN){
+				hp_closing_force();
+			}
         }
+		
+		/*Perform 1 10% cycle, to break door if necessary*/
+		set_door_open_interrupt();
+		timer_wait(50);
+		clear_door_open_interrupt();
+		
      }
-	 clear_door_unattended_interrupt();
 	 clear_door_open_interrupt(); 
      cli();
      break;

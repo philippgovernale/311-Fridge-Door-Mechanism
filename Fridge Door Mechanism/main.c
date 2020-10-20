@@ -18,14 +18,6 @@ enum door_status = {DOOR_OPEN, DOOR_CLOSED, UNKNOWN};
 #define OPEN_CLOSED_THRES 386 /*if count is above, then door is open, else closed*/
 
 
-int is_touched(void){
-	//** HARDWARE MACROS** //
-	#define TOUCHED PINB & (1<<2) // will be 1 if pin is on
-
-	// ** The following code will return 1 if the sensor is being touched, and 0 if it is not **//
-	return TOUCHED ? 1 : 0
-}
-
 void voltage_PWM(uint8_t frequency, float duty_cycle, enum door_status direction, uint8_t ncycles){
 
 	//full cycle period in ms
@@ -42,23 +34,8 @@ void voltage_PWM(uint8_t frequency, float duty_cycle, enum door_status direction
 	}
 }
 
-/*
-Old state function
-enum door_status get_door_state(enum door_status status){
-	switches(1, status);
-	timer_wait(CURRENT_MEAS_DELAY);
-	uint16_t ADC_count = get_ADC_count();
 
-	switches(0, status);
 
-	if (ADC_count > OPEN_CLOSED_THRES){
-		return DOOR_OPEN;
-	}
-	else {
-		return DOOR_CLOSED;
-	}
-}
-*/
 void opening_force(){
 	voltage_PWM(FREQ, 0.1, OPEN, 1);
 	voltage_PWM(FREQ, 0.3, OPEN, 1);

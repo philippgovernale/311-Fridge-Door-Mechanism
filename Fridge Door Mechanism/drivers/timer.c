@@ -35,7 +35,6 @@ void timer_2_init(){
 	TCCR2A = 0x02;
 	TCCR2B = 0x04;
 	OCR2A = 250;
-	OCR2B = 250;
 }
 
 void timer_2_sleep_init(){
@@ -44,7 +43,7 @@ void timer_2_sleep_init(){
 	
 }
 
-void set_door_unattended_interrupt(){
+void set_door_unattended_and_led_interrupt(){
 	TIMSK2 |= (1 << OCIE2B);
 	timer_count_unattended = 0;
 	TCNT2 = 0;
@@ -58,15 +57,10 @@ void set_door_open_interrupt(){
 
 void clear_door_open_interrupt(){
 	TIMSK0 &= ~(1 << OCIE0A);
+	//also close the switch if open
+	switch(0, DOOR_OPEN);
 }
 
-
-void set_flashing_led_interrupt(){
-	/*enable interupt vector */
-	TIMSK2 |= (1 << OCIE2A);
-	timer_count_led = 0;
-	TCNT2 = 0; //reset count
-}
 
 void clear_door_unattended_interrupt(){
 	TIMSK2 &= ~(1 << OCIE2B);
@@ -150,20 +144,17 @@ ISR(TIMER_0_COMPA_VECT){
 }
 
 /*measure time door left open*/
-ISR(TIMER_2_COMPB_VECT){
-	timer_count_led++;
-
-	if (timer_count == DOOR_UNATTENDED_TIME){
-		door_unattended = 1;
-	}
-}
-
-
 /*flashing LED timer*/
 ISR(TIMER_2_COMPA_VECT){
 	timer_count_unattended++;
+	timer_count_led++;
 
-	if (timer_count == BLINK_LIGHT_TIME){
+	if (timer_count_unattended == BLINK_LIGHT_TIME){
 		PORTB ^= (1 << PB4); /*toggle red led*/
+		timer_count_unattended = 0;
+	}
+	
+	if (timer_count_led == DOOR_UNATTENDED_TIME){
+		door_unattended = 1;
 	}
 }

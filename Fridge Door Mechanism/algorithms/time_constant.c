@@ -5,9 +5,9 @@
 #define MAX_OPEN_DOOR_TM 0.00212
 
 
-/*need time constants for particular duty cycle and current direction!*/
+/*measure current after 4 ms after applying 50% duty cycle*/
 
-float measure_time_constant(enum door_state state, enum door_state intended_state){
+uint16_t measure_current_rise(enum door_state state, enum door_state intended_state){
 
 	
 	/*only start applying voltage for measuring tc when the ADC value is at 99% of steady state from max current at 20degrees (ie current is very low (2.4 A)*/
@@ -17,14 +17,10 @@ float measure_time_constant(enum door_state state, enum door_state intended_stat
 	}
 	
 	switch(1, intended_state);
-	timer_wait(5); // apply 10% duty cycle
+	timer_wait(4); // apply 10% duty cycle
 	switch(0, intended_state);
 	
-	uint16_t i_initial = get_ADC_count();
-	timer_wait(4); // wait 4 ms
-	uint16_t i_final = get_ADC_count();
-	
-	
-	float time_constant = -0.004 / math.log(i_final / i_initial);
-	return time_constant;
+	uint16_t ADC_4_ms = get_ADC_count();
+
+	return ADC_4_ms;
 }
