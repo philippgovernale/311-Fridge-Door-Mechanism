@@ -111,7 +111,10 @@
     <Compile Include="algorithms\door_state.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="algorithms\time_constant.c">
+    <Compile Include="algorithms\current_measure.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="algorithms\pwm.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\adc.c">

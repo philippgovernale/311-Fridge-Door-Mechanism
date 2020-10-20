@@ -1,7 +1,7 @@
 
 
 
-void ADC_initialise(void){
+void ADC_init(){
 
 	/* Use Pin C0 as ADC input*/
 	DDRC &= ~(1<<0) // Set PC0 to be an input pin

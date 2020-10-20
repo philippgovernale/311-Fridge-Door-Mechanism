@@ -1,20 +1,19 @@
 
 volatile uint8_t touched = 0;
 
-void current_driver_pins_initialise(){
+void current_driver_pins_init(){
 	DDRB |= (1 << 0); /*Output pins for current driver. PB0 is opening direction*/
 	DDRB |= (1 << 1);
 }
 
-void sensor_pins_initialise(){
+void sensor_pins_init(){
 	// Set up input pin
 	DDRD &= ~(1<<2) // Set pin 2 to be an input pin on D.
 	PORTD |= (1<<2) // Enable the pull-up Resistor for PD2
 }
 
-void led_pins_initialise(){
-	DDRB |= (1<<3); // green led
-	DDRB |= (1<<4); // red led
+void led_pins_init(){
+	DDRB |= (1<<3); // led PIN
 }
 
 void set_touch_interrupt(){
@@ -29,17 +28,15 @@ void clear_touch_interrupt(){
 	EIMSK &= (1 << INT0);
 }
 
-void set_LEDs(enum door_status state){
+void set_LEDs(uint8_t state){
 	//** If the state variable is 1 that means door is open, turn on LED **//
 
-	if (state == DOOR_OPEN){
+	if (state){
 		// turn on the LEd
-		PORTB |= (1<<PB3); // set green led
-		PORTB &= ~(1<<PB4); //clear red led
+		PORTB |= (1<<PB3); // set led
 	}
 	else{
-		PORTB |= (1 << PB4); // set red low
-		PORTB &= ~(1 << PB3); //clear green led
+		PORTB &= ~(1 << PB3); //clear clear
 	}
 }
 

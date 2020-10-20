@@ -13,11 +13,11 @@
 #define AVERAGE_CLOSING_50_DC_4_MS (MAX_CLOSING_50_DC_4_MS - MIN_CLOSING_50_DC_4_MS)/2 + MIN_CLOSING_50_DC_4_MS
 #define AVERAGE_OPENING_50_DC_4_MS (MAX_OPENING_50_DC_4_MS - MIN_OPENING_50_DC_4_MS)/2 + MIN_OPENING_50_DC_4_MS
 
-float closing_door_closed_current = 0;
-float closing_door_open_current = 0;
+uint16_t closing_door_closed_current = 0;
+uint16_t closing_door_open_current = 0;
 
-float opening_door_closed_current = 0;
-float opening_door_open_current = 0;
+uint16_t opening_door_closed_current = 0;
+uint16_t opening_door_open_current = 0;
 
 enum door_state get_door_state_uncalib(enum door_state state, enum door_state intended_state){
 	/*Always measure with door closed when calibrating as when the fridge is first started, this may be safely assumed*/
@@ -34,7 +34,7 @@ enum door_state get_door_state_uncalib(enum door_state state, enum door_state in
 	/*if below average, most likely closing*/
 	if (intended_state == DOOR_CLOSED && ADC_count_4_ms < AVERAGE_OPENING_50_DC_4_MS){
 		/*15% variation allowed*/
-		if ((((ADC_count_4_ms - MIN_CLOSING_50_DC_4_MS)*100) / ADC_count_4_ms) < 15){
+		if (((abs(ADC_count_4_ms - MIN_CLOSING_50_DC_4_MS)*100) / ADC_count_4_ms) < 15){
 			closing_door_closed_current = ADC_count_4_ms;
 			return DOOR_CLOSED:
 		}
@@ -64,7 +64,7 @@ enum door_state get_door_state_uncalib(enum door_state state, enum door_state in
 	}
 	else if (intended_state == DOOR_CLOSED && ADC_count_4_ms > AVERAGE_CLOSING_50_DC_4_MS){
 		/*15% variation allowed*/
-		if ((((ADC_count_4_ms - MAX_CLOSING_50_DC_4_MS)*100)/ADC_count_4_ms) < 15){
+		if (((abs(ADC_count_4_ms - MAX_CLOSING_50_DC_4_MS)*100)/ADC_count_4_ms) < 15){
 			closing_door_open_current = ADC_count_4_ms;
 			return DOOR_OPEN;
 		}
@@ -88,7 +88,7 @@ enum door_state get_door_state_uncalib(enum door_state state, enum door_state in
 		}
 	}
 	else if (intended_state == DOOR_OPEN && ADC_count_4_ms > AVERAGE_OPENING_50_DC_4_MS){
-		if ((((ADC_count_4_ms - MAX_OPENING_50_DC_4_MS)*100)/ADC_count_4_ms) < 15){
+		if (((abs(ADC_count_4_ms - MAX_OPENING_50_DC_4_MS)*100)/ADC_count_4_ms) < 15){
 			opening_door_open_current = ADC_count_4_ms;
 			return DOOR_OPEN;
 		}
@@ -113,7 +113,7 @@ enum door_state get_door_state_uncalib(enum door_state state, enum door_state in
 		}
 	}
 	else if (intended_state == DOOR_OPEN && ADC_count_4_ms < AVERAGE_OPENING_50_DC_4_MS){
-		if (((ADC_count_4_ms - MIN_OPENING_50_DC_4_MS)*100 / ADC_count_4_ms) < 15){
+		if ((abs(ADC_count_4_ms - MIN_OPENING_50_DC_4_MS)*100 / ADC_count_4_ms) < 15){
 			opening_door_closed_current = ADC_count_4_ms;
 			return DOOR_CLOSED;
 		}
@@ -137,32 +137,30 @@ enum door_state get_door_state_uncalib(enum door_state state, enum door_state in
 			}			
 		}
 	}
-	
-	/* Potentially readd here code handling tc outside of calculated time constants*/
 }
 
 	  /*door closed should always be at least 40% higher than door open. Maximum divergences in door door closed are ~31%
 	  !!!! These numbers, I believe are not for 10% */
   enum door_state get_door_state(enum door_state state, enum door_state intended_state){
-	  /*if*/
-	  if (!closing_f_door_closed_tc || closing_f_door_open_tc || opening_f_door_closed_tc || opening_f_door_open_tc){
+	  
+	  if (!closing_door_closed_current || !closing_door_open_current || !opening_door_closed_current || !opening_door_open_current){
 		  get_door_state_uncalib(state, intended_state);
 	  }
 
-	  float tc = measure_time_constant(state);
+	  uint16_t i_ADC = measure_current_rise(state, intended_state);
 
-	  float door_open, door_closed;
+	  uint16_t door_open, door_closed;
 	  
 	  if (intended_state == DOOR_CLOSED){
-		  door_open = abs(tc-closing_f_door_open_tc)/tc;
-		  door_closed = abs(tc-closing_f_door_closed_tc)/tc;
+		  door_open = abs(i_ADC-closing_door_closed_current)*100 / i_ADC;
+		  door_closed = abs(i_ADC-closing_door_open_current)*100 / i_ADC;
 		  
-		  if (door_closed < 0.31 && door_open > 0.40){
-			  closing_f_door_closed_tc = tc;
+		  if (door_closed < 31 && door_open > 40){
+			  closing_door_closed_current = i_ADC;
 			  return DOOR_CLOSED;
 		  }
-		  else if (door_open < 0.15 & door_closed > 0.40){
-			  closing_f_door_open_tc = tc;
+		  else if (door_open < 15 & door_closed > 40){
+			  closing_door_open_current = i_ADC;
 			  return DOOR_OPEN;
 		  }
 		  else{
@@ -170,15 +168,15 @@ enum door_state get_door_state_uncalib(enum door_state state, enum door_state in
 		  }	  
 	  }
 	  else if (intended_state == DOOR_OPEN){
-		  door_open = abs(tc-opening_f_door_open_tc)/tc;
-		  door_closed = abs(tc-closing_f_door_closed_tc)/tc;
+		  door_open = abs(i_ADC-opening_door_open_tc)*100 / i_ADC;
+		  door_closed = abs(i_ADC-opening_door_closed_current)*100 / i_ADC;
 		  
-		  if (door_closed < 0.31 && door_open > 0.40){
-			  opening_f_door_closed_tc = tc;
+		  if (door_closed < 31 && door_open > 0.40){
+			  opening_door_closed_current = i_ADC;
 			  return DOOR_CLOSED;
 		  }
 		  else if (door_open < 0.15 & door_closed > 0.40){
-			  opening_f_door_open_tc = tc;
+			  opening_door_open_current = i_ADC;
 			  return DOOR_OPEN;
 		  }
 		  else{

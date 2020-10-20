@@ -25,7 +25,7 @@ volatile uint8_t PWM_state_high; /*used to indicate whether PWM is low/high*/
    - Sets clock prescaler to 64
    - Sets (8 bit) count value to 250 on Output Compare Match A register
 */
-void timer_0_PWM_initialise(){
+void timer_0_PWM_init(){
 	TCCR0A = 0x02;
 	TCCR0B = 0x03;
 	OCR0A = 250;
