@@ -14,18 +14,27 @@ enum state {
   OPEN,
   CLOSED
 };
+
+
 void FSM_tick(){
   static enum state current_state = START;
 
   switch(current_state){
     case START:
-      if (get_door_state(UNKNOWN, UNKNOWN) == DOOR_OPEN){
-        current_state = OPEN;
-      }
-      else {
-        current_state = CLOSED;
-      }
-      break;
+	
+		/*
+		switch(1, DOOR_CLOSED);
+		timer_wait(1000);
+		switch(0, DOOR_CLOSED);
+		*/
+		
+		if (get_door_state(UNKNOWN, UNKNOWN) == DOOR_OPEN){
+			current_state = OPEN;
+		}
+		else {
+			current_state = CLOSED;
+		}
+		break;
 
     case OPENING:
       opening_force();
@@ -58,9 +67,9 @@ void FSM_tick(){
 		
 			if (door_closing(i_value)){
 			 //breaking force
-				switch(1, DOOR_OPEN);
+				switches(1, DOOR_OPEN);
 				timer_wait(5); //10%
-				switch(0, DOOR_OPEN);
+				switches(0, DOOR_OPEN);
 				closing_force(); //then finish closing the door
 			}
 		
@@ -72,10 +81,11 @@ void FSM_tick(){
 			}
 		
 		/*Perform 1 10% cycle, to break door if necessary*/
+			/*
 			set_door_open_interrupt();
 			timer_wait(50);
 			clear_door_open_interrupt();
-		
+			*/
 		}
 		clear_door_open_interrupt(); 
 		cli();

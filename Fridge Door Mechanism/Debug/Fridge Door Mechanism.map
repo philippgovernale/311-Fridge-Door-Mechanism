@@ -73,6 +73,8 @@ Discarded input sections
  .text          0x00000000        0x0 drivers/timer.o
  .data          0x00000000        0x0 drivers/timer.o
  .bss           0x00000000        0x0 drivers/timer.o
+ .text.set_door_open_interrupt
+                0x00000000       0x10 drivers/timer.o
  .text.setup_sleep
                 0x00000000       0x38 drivers/timer.o
  .text          0x00000000        0x0 fsm/fsm.o
@@ -323,7 +325,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0xeb0
+.text           0x00000000      0xec4
  *(.vectors)
  .vectors       0x00000000       0x68 D:/Apps/New folder/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -405,172 +407,169 @@ END GROUP
                 0x00000090                . = ALIGN (0x2)
  *(.text.*)
  .text.get_door_state_uncalib
-                0x00000090      0x1ca algorithms/door_state.o
+                0x00000090      0x19c algorithms/door_state.o
                 0x00000090                get_door_state_uncalib
  .text.get_door_state
-                0x0000025a      0x1f4 algorithms/door_state.o
-                0x0000025a                get_door_state
+                0x0000022c      0x1e4 algorithms/door_state.o
+                0x0000022c                get_door_state
  .text.door_closing
-                0x0000044e       0x4a algorithms/door_state.o
-                0x0000044e                door_closing
+                0x00000410       0x4a algorithms/door_state.o
+                0x00000410                door_closing
  .text.measure_current_rise
-                0x00000498       0x28 algorithms/current_measure.o
-                0x00000498                measure_current_rise
+                0x0000045a       0x4a algorithms/current_measure.o
+                0x0000045a                measure_current_rise
  .text.voltage_PWM
-                0x000004c0       0xc2 algorithms/pwm.o
-                0x000004c0                voltage_PWM
+                0x000004a4       0xc2 algorithms/pwm.o
+                0x000004a4                voltage_PWM
  .text.closing_force
-                0x00000582      0x13e algorithms/pwm.o
-                0x00000582                closing_force
+                0x00000566      0x13e algorithms/pwm.o
+                0x00000566                closing_force
  .text.opening_force
-                0x000006c0       0x58 algorithms/pwm.o
-                0x000006c0                opening_force
+                0x000006a4       0x58 algorithms/pwm.o
+                0x000006a4                opening_force
  .text.hp_opening_force
-                0x00000718       0x38 algorithms/pwm.o
-                0x00000718                hp_opening_force
+                0x000006fc       0x38 algorithms/pwm.o
+                0x000006fc                hp_opening_force
  .text.ADC_init
-                0x00000750       0x10 drivers/adc.o
-                0x00000750                ADC_init
+                0x00000734       0x10 drivers/adc.o
+                0x00000734                ADC_init
  .text.get_ADC_count
-                0x00000760       0x26 drivers/adc.o
-                0x00000760                get_ADC_count
+                0x00000744       0x26 drivers/adc.o
+                0x00000744                get_ADC_count
  .text.current_driver_pins_init
-                0x00000786        0x6 drivers/io_pins.o
-                0x00000786                current_driver_pins_init
+                0x0000076a        0x6 drivers/io_pins.o
+                0x0000076a                current_driver_pins_init
  .text.sensor_pins_init
-                0x0000078c        0x6 drivers/io_pins.o
-                0x0000078c                sensor_pins_init
+                0x00000770        0x6 drivers/io_pins.o
+                0x00000770                sensor_pins_init
  .text.led_pins_init
-                0x00000792        0x4 drivers/io_pins.o
-                0x00000792                led_pins_init
+                0x00000776        0x4 drivers/io_pins.o
+                0x00000776                led_pins_init
  .text.set_touch_interrupt
-                0x00000796       0x14 drivers/io_pins.o
-                0x00000796                set_touch_interrupt
+                0x0000077a       0x14 drivers/io_pins.o
+                0x0000077a                set_touch_interrupt
  .text.clear_touch_interrupt
-                0x000007aa        0x8 drivers/io_pins.o
-                0x000007aa                clear_touch_interrupt
- .text.set_LED  0x000007b2        0xc drivers/io_pins.o
-                0x000007b2                set_LED
+                0x0000078e        0x8 drivers/io_pins.o
+                0x0000078e                clear_touch_interrupt
+ .text.set_LED  0x00000796        0xc drivers/io_pins.o
+                0x00000796                set_LED
  .text.switches
-                0x000007be       0x16 drivers/io_pins.o
-                0x000007be                switches
+                0x000007a2       0x16 drivers/io_pins.o
+                0x000007a2                switches
  .text.__vector_1
-                0x000007d4       0x1e drivers/io_pins.o
-                0x000007d4                __vector_1
+                0x000007b8       0x1e drivers/io_pins.o
+                0x000007b8                __vector_1
  .text.timer_0_PWM_init
-                0x000007f2        0xe drivers/timer.o
-                0x000007f2                timer_0_PWM_init
+                0x000007d6        0xe drivers/timer.o
+                0x000007d6                timer_0_PWM_init
  .text.timer_2_init
-                0x00000800       0x14 drivers/timer.o
-                0x00000800                timer_2_init
+                0x000007e4       0x14 drivers/timer.o
+                0x000007e4                timer_2_init
  .text.set_door_unattended_and_led_interrupt
-                0x00000814       0x18 drivers/timer.o
-                0x00000814                set_door_unattended_and_led_interrupt
- .text.set_door_open_interrupt
-                0x0000082c       0x10 drivers/timer.o
-                0x0000082c                set_door_open_interrupt
+                0x000007f8       0x18 drivers/timer.o
+                0x000007f8                set_door_unattended_and_led_interrupt
  .text.clear_door_open_interrupt
-                0x0000083c        0xc drivers/timer.o
-                0x0000083c                clear_door_open_interrupt
+                0x00000810       0x14 drivers/timer.o
+                0x00000810                clear_door_open_interrupt
  .text.clear_door_unattended_interrupt
-                0x00000848        0xc drivers/timer.o
-                0x00000848                clear_door_unattended_interrupt
+                0x00000824        0xc drivers/timer.o
+                0x00000824                clear_door_unattended_interrupt
  .text.WDT_init
-                0x00000854       0x18 drivers/timer.o
-                0x00000854                WDT_init
+                0x00000830       0x18 drivers/timer.o
+                0x00000830                WDT_init
  .text.enable_WDT_interrupt
-                0x0000086c        0xc drivers/timer.o
-                0x0000086c                enable_WDT_interrupt
+                0x00000848        0xc drivers/timer.o
+                0x00000848                enable_WDT_interrupt
  .text.disable_WDT_interrupt
-                0x00000878        0xc drivers/timer.o
-                0x00000878                disable_WDT_interrupt
+                0x00000854        0xc drivers/timer.o
+                0x00000854                disable_WDT_interrupt
  .text.timer_wait
-                0x00000884       0x38 drivers/timer.o
-                0x00000884                timer_wait
+                0x00000860       0x38 drivers/timer.o
+                0x00000860                timer_wait
  .text.__vector_6
-                0x000008bc       0x14 drivers/timer.o
-                0x000008bc                __vector_6
+                0x00000898       0x14 drivers/timer.o
+                0x00000898                __vector_6
  .text.__vector_14
-                0x000008d0       0x56 drivers/timer.o
-                0x000008d0                __vector_14
+                0x000008ac       0x92 drivers/timer.o
+                0x000008ac                __vector_14
  .text.__vector_7
-                0x00000926       0x5e drivers/timer.o
-                0x00000926                __vector_7
+                0x0000093e       0x5e drivers/timer.o
+                0x0000093e                __vector_7
  .text.FSM_tick
-                0x00000984      0x12c fsm/fsm.o
-                0x00000984                FSM_tick
- .text.main     0x00000ab0       0x22 main.o
-                0x00000ab0                main
+                0x0000099c      0x128 fsm/fsm.o
+                0x0000099c                FSM_tick
+ .text.main     0x00000ac4       0x22 main.o
+                0x00000ac4                main
  .text.avr-libc.fplib
-                0x00000ad2        0xe d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(addsf3.o)
-                0x00000ad2                __subsf3
-                0x00000ad4                __addsf3
+                0x00000ae6        0xe d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(addsf3.o)
+                0x00000ae6                __subsf3
+                0x00000ae8                __addsf3
  .text.avr-libc.fplib
-                0x00000ae0       0xcc d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(addsf3x.o)
-                0x00000b02                __addsf3x
+                0x00000af4       0xcc d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(addsf3x.o)
+                0x00000b16                __addsf3x
  .text.avr-libc.fplib
-                0x00000bac        0xa d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(cmpsf2.o)
-                0x00000bac                __nesf2
-                0x00000bac                __eqsf2
-                0x00000bac                __cmpsf2
-                0x00000bac                __ltsf2
-                0x00000bac                __lesf2
+                0x00000bc0        0xa d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(cmpsf2.o)
+                0x00000bc0                __nesf2
+                0x00000bc0                __eqsf2
+                0x00000bc0                __cmpsf2
+                0x00000bc0                __ltsf2
+                0x00000bc0                __lesf2
  .text.avr-libc.fplib
-                0x00000bb6       0x5e d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fixunssfsi.o)
-                0x00000bb6                __fixunssfsi
+                0x00000bca       0x5e d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fixunssfsi.o)
+                0x00000bca                __fixunssfsi
  .text.avr-libc.fplib
-                0x00000c14       0x7a d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(floatsisf.o)
-                0x00000c14                __floatunsisf
-                0x00000c18                __floatsisf
+                0x00000c28       0x7a d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(floatsisf.o)
+                0x00000c28                __floatunsisf
+                0x00000c2c                __floatsisf
  .text.avr-libc.fplib
-                0x00000c8e       0x48 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_cmp.o)
-                0x00000c8e                __fp_cmp
+                0x00000ca2       0x48 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_cmp.o)
+                0x00000ca2                __fp_cmp
  .text.avr-libc.fplib
-                0x00000cd6        0xc d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_inf.o)
-                0x00000cd6                __fp_inf
+                0x00000cea        0xc d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_inf.o)
+                0x00000cea                __fp_inf
  .text.avr-libc.fplib
-                0x00000ce2        0x6 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_nan.o)
-                0x00000ce2                __fp_nan
+                0x00000cf6        0x6 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_nan.o)
+                0x00000cf6                __fp_nan
  .text.avr-libc.fplib
-                0x00000ce8        0xe d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_pscA.o)
-                0x00000ce8                __fp_pscA
+                0x00000cfc        0xe d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_pscA.o)
+                0x00000cfc                __fp_pscA
  .text.avr-libc.fplib
-                0x00000cf6        0xe d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_pscB.o)
-                0x00000cf6                __fp_pscB
+                0x00000d0a        0xe d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_pscB.o)
+                0x00000d0a                __fp_pscB
  .text.avr-libc.fplib
-                0x00000d04       0x22 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_round.o)
-                0x00000d04                __fp_round
+                0x00000d18       0x22 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_round.o)
+                0x00000d18                __fp_round
  .text.avr-libc.fplib
-                0x00000d26       0x44 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_split3.o)
-                0x00000d26                __fp_split3
-                0x00000d36                __fp_splitA
+                0x00000d3a       0x44 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_split3.o)
+                0x00000d3a                __fp_split3
+                0x00000d4a                __fp_splitA
  .text.avr-libc.fplib
-                0x00000d6a        0xe d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_zero.o)
-                0x00000d6a                __fp_zero
-                0x00000d6c                __fp_szero
+                0x00000d7e        0xe d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(fp_zero.o)
+                0x00000d7e                __fp_zero
+                0x00000d80                __fp_szero
  .text.avr-libc.fplib
-                0x00000d78        0xa d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(gesf2.o)
-                0x00000d78                __gesf2
-                0x00000d78                __gtsf2
+                0x00000d8c        0xa d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(gesf2.o)
+                0x00000d8c                __gesf2
+                0x00000d8c                __gtsf2
  .text.avr-libc.fplib
-                0x00000d82        0x8 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(mulsf3.o)
-                0x00000d82                __mulsf3
+                0x00000d96        0x8 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(mulsf3.o)
+                0x00000d96                __mulsf3
  .text.avr-libc.fplib
-                0x00000d8a       0xd2 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(mulsf3x.o)
-                0x00000da8                __mulsf3x
-                0x00000dae                __mulsf3_pse
+                0x00000d9e       0xd2 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a(mulsf3x.o)
+                0x00000dbc                __mulsf3x
+                0x00000dc2                __mulsf3_pse
  .text.libgcc.div
-                0x00000e5c       0x28 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodhi4.o)
-                0x00000e5c                __udivmodhi4
+                0x00000e70       0x28 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodhi4.o)
+                0x00000e70                __udivmodhi4
  .text.libgcc.div
-                0x00000e84       0x28 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_divmodhi4.o)
-                0x00000e84                _div
-                0x00000e84                __divmodhi4
-                0x00000eac                . = ALIGN (0x2)
+                0x00000e98       0x28 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_divmodhi4.o)
+                0x00000e98                _div
+                0x00000e98                __divmodhi4
+                0x00000ec0                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000eac        0x0 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x00000eac                _exit
-                0x00000eac                exit
+ .fini9         0x00000ec0        0x0 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x00000ec0                _exit
+                0x00000ec0                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -589,11 +588,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000eac        0x4 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x00000ec0        0x4 d:/apps/new folder/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000eb0                _etext = .
+                0x00000ec4                _etext = .
 
-.data           0x00800100        0x0 load address 0x00000eb0
+.data           0x00800100        0x0 load address 0x00000ec4
                 [!provide]                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -635,8 +634,8 @@ END GROUP
                 0x0080010d                timer_count_unattended
                 0x0080010f                timer_count_led
                 0x00800110                PROVIDE (__bss_end, .)
-                0x00000eb0                __data_load_start = LOADADDR (.data)
-                0x00000eb0                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00000ec4                __data_load_start = LOADADDR (.data)
+                0x00000ec4                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00800110        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
@@ -736,81 +735,81 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x187a
+.debug_info     0x00000000     0x19a4
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 D:/Apps/New folder/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_info    0x000005f4      0x336 algorithms/door_state.o
- .debug_info    0x0000092a      0x147 algorithms/current_measure.o
- .debug_info    0x00000a71      0x484 algorithms/pwm.o
- .debug_info    0x00000ef5       0xc1 drivers/adc.o
- .debug_info    0x00000fb6      0x182 drivers/io_pins.o
- .debug_info    0x00001138      0x260 drivers/timer.o
- .debug_info    0x00001398      0x38f fsm/fsm.o
- .debug_info    0x00001727      0x153 main.o
+ .debug_info    0x000005f4      0x3f3 algorithms/door_state.o
+ .debug_info    0x000009e7      0x17f algorithms/current_measure.o
+ .debug_info    0x00000b66      0x484 algorithms/pwm.o
+ .debug_info    0x00000fea       0xc1 drivers/adc.o
+ .debug_info    0x000010ab      0x182 drivers/io_pins.o
+ .debug_info    0x0000122d      0x2b7 drivers/timer.o
+ .debug_info    0x000014e4      0x38e fsm/fsm.o
+ .debug_info    0x00001872      0x132 main.o
 
-.debug_abbrev   0x00000000      0xc1f
+.debug_abbrev   0x00000000      0xc78
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 D:/Apps/New folder/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_abbrev  0x000005a2      0x11c algorithms/door_state.o
- .debug_abbrev  0x000006be       0xc3 algorithms/current_measure.o
- .debug_abbrev  0x00000781       0xf8 algorithms/pwm.o
- .debug_abbrev  0x00000879       0x76 drivers/adc.o
- .debug_abbrev  0x000008ef       0xd1 drivers/io_pins.o
- .debug_abbrev  0x000009c0       0xd1 drivers/timer.o
- .debug_abbrev  0x00000a91      0x103 fsm/fsm.o
- .debug_abbrev  0x00000b94       0x8b main.o
+ .debug_abbrev  0x000005a2      0x125 algorithms/door_state.o
+ .debug_abbrev  0x000006c7       0xce algorithms/current_measure.o
+ .debug_abbrev  0x00000795       0xf8 algorithms/pwm.o
+ .debug_abbrev  0x0000088d       0x76 drivers/adc.o
+ .debug_abbrev  0x00000903       0xd1 drivers/io_pins.o
+ .debug_abbrev  0x000009d4      0x139 drivers/timer.o
+ .debug_abbrev  0x00000b0d      0x103 fsm/fsm.o
+ .debug_abbrev  0x00000c10       0x68 main.o
 
-.debug_line     0x00000000      0xfba
+.debug_line     0x00000000     0x1015
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x133 D:/Apps/New folder/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_line    0x00000133      0x2fe algorithms/door_state.o
- .debug_line    0x00000431       0xfd algorithms/current_measure.o
- .debug_line    0x0000052e      0x25b algorithms/pwm.o
- .debug_line    0x00000789       0xd9 drivers/adc.o
- .debug_line    0x00000862      0x1a2 drivers/io_pins.o
- .debug_line    0x00000a04      0x2d7 drivers/timer.o
- .debug_line    0x00000cdb      0x244 fsm/fsm.o
- .debug_line    0x00000f1f       0x9b main.o
+ .debug_line    0x00000133      0x31b algorithms/door_state.o
+ .debug_line    0x0000044e      0x116 algorithms/current_measure.o
+ .debug_line    0x00000564      0x25b algorithms/pwm.o
+ .debug_line    0x000007bf       0xd9 drivers/adc.o
+ .debug_line    0x00000898      0x1a2 drivers/io_pins.o
+ .debug_line    0x00000a3a      0x2f6 drivers/timer.o
+ .debug_line    0x00000d30      0x238 fsm/fsm.o
+ .debug_line    0x00000f68       0xad main.o
 
-.debug_frame    0x00000000      0x410
+.debug_frame    0x00000000      0x46c
  *(.debug_frame)
- .debug_frame   0x00000000       0x8c algorithms/door_state.o
- .debug_frame   0x0000008c       0x24 algorithms/current_measure.o
- .debug_frame   0x000000b0      0x108 algorithms/pwm.o
- .debug_frame   0x000001b8       0x34 drivers/adc.o
- .debug_frame   0x000001ec       0xa4 drivers/io_pins.o
- .debug_frame   0x00000290      0x12c drivers/timer.o
- .debug_frame   0x000003bc       0x30 fsm/fsm.o
- .debug_frame   0x000003ec       0x24 main.o
+ .debug_frame   0x00000000       0xa0 algorithms/door_state.o
+ .debug_frame   0x000000a0       0x34 algorithms/current_measure.o
+ .debug_frame   0x000000d4      0x108 algorithms/pwm.o
+ .debug_frame   0x000001dc       0x34 drivers/adc.o
+ .debug_frame   0x00000210       0xa4 drivers/io_pins.o
+ .debug_frame   0x000002b4      0x164 drivers/timer.o
+ .debug_frame   0x00000418       0x30 fsm/fsm.o
+ .debug_frame   0x00000448       0x24 main.o
 
-.debug_str      0x00000000      0x847
+.debug_str      0x00000000      0x85d
  *(.debug_str)
  .debug_str     0x00000000      0x208 D:/Apps/New folder/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_str     0x00000208      0x2c6 algorithms/door_state.o
-                                0x30b (size before relaxing)
- .debug_str     0x000004ce       0x37 algorithms/current_measure.o
-                                0x231 (size before relaxing)
- .debug_str     0x00000505       0xb5 algorithms/pwm.o
+ .debug_str     0x00000208      0x2e5 algorithms/door_state.o
+                                0x32a (size before relaxing)
+ .debug_str     0x000004ed       0x37 algorithms/current_measure.o
+                                0x23a (size before relaxing)
+ .debug_str     0x00000524       0xac algorithms/pwm.o
                                 0x2ae (size before relaxing)
- .debug_str     0x000005ba       0x24 drivers/adc.o
+ .debug_str     0x000005d0       0x24 drivers/adc.o
                                 0x1d6 (size before relaxing)
- .debug_str     0x000005de       0x92 drivers/io_pins.o
+ .debug_str     0x000005f4       0x92 drivers/io_pins.o
                                 0x265 (size before relaxing)
- .debug_str     0x00000670      0x18c drivers/timer.o
-                                0x364 (size before relaxing)
- .debug_str     0x000007fc       0x3a fsm/fsm.o
-                                0x36f (size before relaxing)
- .debug_str     0x00000836       0x11 main.o
+ .debug_str     0x00000686      0x18c drivers/timer.o
+                                0x36d (size before relaxing)
+ .debug_str     0x00000812       0x3a fsm/fsm.o
+                                0x360 (size before relaxing)
+ .debug_str     0x0000084c       0x11 main.o
                                 0x215 (size before relaxing)
 
-.debug_loc      0x00000000      0x99d
+.debug_loc      0x00000000      0xbf1
  *(.debug_loc)
- .debug_loc     0x00000000      0x32c algorithms/door_state.o
- .debug_loc     0x0000032c       0x42 algorithms/current_measure.o
- .debug_loc     0x0000036e      0x4c1 algorithms/pwm.o
- .debug_loc     0x0000082f       0x3c drivers/io_pins.o
- .debug_loc     0x0000086b       0xeb drivers/timer.o
- .debug_loc     0x00000956       0x47 fsm/fsm.o
+ .debug_loc     0x00000000      0x482 algorithms/door_state.o
+ .debug_loc     0x00000482       0xb1 algorithms/current_measure.o
+ .debug_loc     0x00000533      0x4c1 algorithms/pwm.o
+ .debug_loc     0x000009f4       0x3c drivers/io_pins.o
+ .debug_loc     0x00000a30      0x17a drivers/timer.o
+ .debug_loc     0x00000baa       0x47 fsm/fsm.o
 
 .debug_macinfo
  *(.debug_macinfo)

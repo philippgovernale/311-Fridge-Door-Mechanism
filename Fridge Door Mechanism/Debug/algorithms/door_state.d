@@ -6,7 +6,8 @@ algorithms/door_state.d algorithms/door_state.o: \
  d:\apps\new\ folder\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdint.h \
  d:\apps\new\ folder\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdint.h \
  ../algorithms/current_measure.h ../algorithms/../drivers/timer.h \
- ../algorithms/../drivers/../algorithms/door_state.h
+ ../algorithms/../drivers/../algorithms/door_state.h \
+ ../algorithms/../drivers/io_pins.h
 
 d:\apps\new\ folder\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h:
 
@@ -23,3 +24,5 @@ d:\apps\new\ folder\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdint.h:
 ../algorithms/../drivers/timer.h:
 
 ../algorithms/../drivers/../algorithms/door_state.h:
+
+../algorithms/../drivers/io_pins.h:

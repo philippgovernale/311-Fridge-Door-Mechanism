@@ -11,7 +11,7 @@ main.d main.o: .././main.c \
  d:\apps\new\ folder\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  d:\apps\new\ folder\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
  .././drivers/timer.h .././drivers/../algorithms/door_state.h \
- .././drivers/adc.h .././drivers/io_pins.h
+ .././drivers/adc.h .././drivers/io_pins.h .././fsm/fsm.h
 
 d:\apps\new\ folder\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -42,3 +42,5 @@ d:\apps\new\ folder\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h
 .././drivers/adc.h:
 
 .././drivers/io_pins.h:
+
+.././fsm/fsm.h:

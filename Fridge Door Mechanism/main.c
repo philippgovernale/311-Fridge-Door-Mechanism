@@ -9,6 +9,7 @@
 #include "drivers/timer.h"
 #include "drivers/adc.h"
 #include "drivers/io_pins.h"
+#include "fsm/fsm.h"
 
 #define CURRENT_MEAS_DELAY_MS 4
 
@@ -24,7 +25,7 @@ int main(void)
 
   while (1)
   {
-		FSM_tick();
+	  FSM_tick();
   }
 	return 0;
 }

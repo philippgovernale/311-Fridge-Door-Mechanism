@@ -2,6 +2,7 @@
 #include <avr/interrupt.h>
 
 #include "timer.h"
+#include "io_pins.h"
 
 #define BLINK_LIGHT_TIME 500 /*blink light frequency of 1 Hz*/
 #define DOOR_UNATTENDED_TIME 30000
@@ -27,7 +28,7 @@ volatile uint8_t door_unattended = 0;
 void timer_0_PWM_init(){
 	TCCR0A = 0x02;
 	TCCR0B = 0x03;
-	OCR0A = 250;
+	OCR0A = 125;
 }
 
 void timer_2_init(){
@@ -59,7 +60,7 @@ void set_door_open_interrupt(){
 void clear_door_open_interrupt(){
 	TIMSK0 &= ~(1 << OCIE0A);
 	//also close the switch if open
-	switch(0, DOOR_OPEN);
+	switches(0, DOOR_OPEN);
 }
 
 
@@ -128,13 +129,13 @@ ISR(TIMER0_COMPA_vect){
 	timer_count_open_PWM++;
 	
 	if (PWM_state_high && timer_count_open_PWM == DUTY_CYCLE_10_ON_T){
-		switch(0, DOOR_OPEN);
+		switches(0, DOOR_OPEN);
 		timer_count_open_PWM = 0;
 		PWM_state_high = 0;
 	}
 	
 	else if (!PWM_state_high && timer_count_open_PWM == DUTY_CYCLE_10_OFF_T){
-		switch(1, DOOR_OPEN);
+		switches(1, DOOR_OPEN);
 		timer_count_open_PWM = 0;
 		PWM_state_high = 1;
 	}
